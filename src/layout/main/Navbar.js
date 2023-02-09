@@ -8,7 +8,7 @@ import auth from "../../firebase/firebase.config";
 
 const Navbar = () => {
   const dispatch = useDispatch()
-  const { email } = useSelector((state) => state.auth)
+  const { email, role } = useSelector((state) => state.auth)
   const { pathname } = useLocation();
 
 
@@ -32,6 +32,16 @@ const Navbar = () => {
             Jobs
           </Link>
         </li>
+        {email && role && <li>
+          <Link className='hover:text-primary' to='/dashboard'>
+            Dashboard
+          </Link>
+        </li>}
+        {email && !role && <li>
+          <Link className='hover:text-primary' to='/register'>
+            Get Started
+          </Link>
+        </li>}
 
         <li>
           {!email ?

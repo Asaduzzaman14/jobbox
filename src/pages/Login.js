@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
 import loginImage from "../assets/login.svg";
+import Loading from "../components/reusable/Loading";
 import { googleLogin, loginUser } from "../features/auth/authSlice";
 
 
@@ -35,6 +36,12 @@ const Login = () => {
       toast.error(error);
     }
   }, [isError, error])
+
+  // useEffect(() => {
+  //   if (isLoading === true) {
+  //     return toast.loading('Please wait', { id: 'login' })
+  //   }
+  // }, [])
 
   return (
     <div className='flex h-screen items-center'>
