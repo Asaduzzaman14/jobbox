@@ -8,7 +8,7 @@ import auth from "../../firebase/firebase.config";
 
 const Navbar = () => {
   const dispatch = useDispatch()
-  const { user: email, role } = useSelector((state) => state.auth)
+  const { user: { email, role } } = useSelector((state) => state.auth)
   const { pathname } = useLocation();
 
 
