@@ -19,6 +19,7 @@ export const crateuser = createAsyncThunk('auth/createUser', async ({ email, pas
 
 export const getUser = createAsyncThunk(
     'auth/getUser', async ({ email }) => {
+        console.log(email, 'this is email');
         const res = await fetch(`${process.env.REACT_APP_DEV_URL}/user/${email}`)
         const data = await res.json()
         if (data.email) {
@@ -110,15 +111,15 @@ const authSlice = createSlice({
                 state.isError = false;
                 state.error = ''
             })
-            .addCase(getUser.rejected, (state) => {
+            .addCase(getUser.rejected, (state, action) => {
                 state.isLoading = true;
                 state.isError = false;
-                state.error = ''
+                state.error = action.error.message
             })
             .addCase(getUser.pending, (state, action) => {
                 state.isLoading = false;
+                state.user = action.payload.data;
                 if (action.payload.status) {
-                    state.user = action.payload.data;
                 } else {
                     state.user.email = action.payload
                 }

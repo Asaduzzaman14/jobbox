@@ -3,11 +3,15 @@ import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa";
 import { useRegisterUserMutation } from "../../features/auth/authApi";
+import { useSelector } from "react-redux";
 
 const EmployerRegistration = () => {
-  const [countries, setCountries] = useState([]);
+  const { user: { email } } = useSelector((state) => state.auth)
 
-  const { handleSubmit, register, control } = useForm();
+  const [countries, setCountries] = useState([]);
+  const { handleSubmit, register, control } = useForm({
+    defaultValue: { email }
+  });
   const term = useWatch({ control, name: "term" });
   const navigate = useNavigate();
 
