@@ -4,7 +4,6 @@ import auth from "../../firebase/firebase.config"
 
 const initialState = {
     user: { email: '', role: '' },
-    role: '',
     isLoading: true,
     isError: false,
     error: '',
@@ -18,15 +17,19 @@ export const crateuser = createAsyncThunk('auth/createUser', async ({ email, pas
 })
 
 export const getUser = createAsyncThunk(
-    'auth/getUser', async ({ email }) => {
+    'auth/getUser', async (email) => {
         console.log(email, 'this is email');
         const res = await fetch(`${process.env.REACT_APP_DEV_URL}/user/${email}`)
         const data = await res.json()
-        if (data.email) {
-            return data;
-        }
+        return data.data
 
-        return email
+
+        // if (data.email) {
+        //     console.log(data);
+        //     return data;
+        // }
+
+        // return email
     })
 
 
@@ -59,7 +62,7 @@ const authSlice = createSlice({
             state.isLoading = false
         },
 
-        toggleLoading: (state, action) => {
+        toggleLoading: (state) => {
             state.isLoading = false
         },
 
@@ -111,30 +114,54 @@ const authSlice = createSlice({
                 state.isError = false;
                 state.error = ''
             })
-            .addCase(getUser.rejected, (state, action) => {
-                state.isLoading = true;
-                state.isError = false;
-                state.error = action.error.message
-            })
-            .addCase(getUser.pending, (state, action) => {
-                state.isLoading = false;
-                state.user = action.payload.data;
-                if (action.payload.status) {
-                } else {
-                    state.user.email = action.payload
-                }
-                state.isError = false;
-                state.error = ''
-            })
-            .addCase(getUser.fulfilled, (state, action) => {
+            .addCase(googleLogin.rejected, (state, action) => {
                 state.isLoading = false;
                 state.user.email = '';
                 state.isError = true;
                 state.error = action.error.message
             })
+            .addCase(getUser.pending, (state) => {
+                state.isLoading = true;
+                state.isError = false;
+                state.error = ''
+            })
+            .addCase(getUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.user = action.payload;
+                state.isError = false;
+                state.error = ''
+            })
+            .addCase(getUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.user.email = '';
+                state.isError = true;
+                state.error = action.error.message
+            })
+
+
+        // .addCase(getUser.pending, (state, action) => {
+        //     state.isLoading = true;
+        //     state.isError = false;
+        //     state.error = ''
+        // })
+        // .addCase(getUser.fulfilled, (state, action) => {
+        //     state.isLoading = false;
+        //     state.user = action.payload.data;
+        //     if (action.payload.status) {
+        //     } else {
+        //         state.user.email = action.payload
+        //     }
+        //     state.isError = false;
+        //     state.error = ''
+        // })
+        // .addCase(getUser.rejected, (state, action) => {
+        //     state.isLoading = false;
+        //     state.user.email = '';
+        //     state.isError = true;
+        //     state.error = action.error.message
+        // })
     }
 })
-
 export const { logOut, setUser, toggleLoading } = authSlice.actions;
 
 export default authSlice.reducer

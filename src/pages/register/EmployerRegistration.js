@@ -7,15 +7,15 @@ import { useSelector } from "react-redux";
 
 const EmployerRegistration = () => {
   const { user: { email } } = useSelector((state) => state.auth)
-
+  console.log(email);
   const [countries, setCountries] = useState([]);
   const { handleSubmit, register, control } = useForm({
-    defaultValue: { email }
+    defaultValue: email
   });
   const term = useWatch({ control, name: "term" });
   const navigate = useNavigate();
 
-  const [postUser, isLoading] = useRegisterUserMutation()
+  const [postUser, { isLoading, isError }] = useRegisterUserMutation()
 
 
   const businessCategory = [
@@ -83,7 +83,7 @@ const EmployerRegistration = () => {
             <label className='mb-2' htmlFor='email'>
               Email
             </label>
-            <input type='email' id='email' disabled {...register("email")} />
+            <input className="cursor-not-allowed" type='email' id='email'  {...register("email")} />
           </div>
           <div className='flex flex-col w-full max-w-xs'>
             <h1 className='mb-3'>Gender</h1>

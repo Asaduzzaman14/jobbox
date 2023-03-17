@@ -13,11 +13,12 @@ function App() {
   const { isLoading } = useSelector((state) => state.auth)
   console.log(isLoading)
 
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user)
         dispatch(getUser(user.email))
+        console.log(user.email, 'aaaaaaa')
       } else {
         dispatch(toggleLoading())
       }
