@@ -21,15 +21,13 @@ export const getUser = createAsyncThunk(
         console.log(email, 'this is email');
         const res = await fetch(`${process.env.REACT_APP_DEV_URL}/user/${email}`)
         const data = await res.json()
-        return data.data
 
+        if (data.status) {
+            console.log(data);
+            return data
+        }
 
-        // if (data.email) {
-        //     console.log(data);
-        //     return data;
-        // }
-
-        // return email
+        return email
     })
 
 
@@ -127,7 +125,11 @@ const authSlice = createSlice({
             })
             .addCase(getUser.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.user = action.payload;
+                if (action.payload.status) {
+                    state.user = action.payload.data;
+                } else {
+                    state.user.email = action.payload
+                }
                 state.isError = false;
                 state.error = ''
             })

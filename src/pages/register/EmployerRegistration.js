@@ -10,7 +10,7 @@ const EmployerRegistration = () => {
   console.log(email);
   const [countries, setCountries] = useState([]);
   const { handleSubmit, register, control } = useForm({
-    defaultValue: email
+    defaultValues: { email }
   });
   const term = useWatch({ control, name: "term" });
   const navigate = useNavigate();
