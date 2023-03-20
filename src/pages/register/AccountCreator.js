@@ -2,12 +2,14 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import candidate from "../../assets/candidate.svg";
 import employer from "../../assets/employer.svg";
+import { useRegisterUserMutation } from "../../features/auth/authApi";
 import CandidateRegistration from "./CandidateRegistration";
 import EmployerRegistration from "./EmployerRegistration";
 
 const AccountCreator = () => {
   const navigate = useNavigate();
   const { type } = useParams();
+  const [postUser, { isError, isLoading, isSuccess }] = useRegisterUserMutation()
 
   if (type === "candidate") {
     return <CandidateRegistration />;

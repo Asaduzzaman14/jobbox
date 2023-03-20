@@ -8,12 +8,21 @@ const jobApi = apiSlice.injectEndpoints({
                 method: 'POST',
                 url: '/job',
                 body: data
-            })
+            }),
+            invalidatesTags: ["jobs"]
+        }),
+        apply: builder.mutation({
+            query: (data) => ({
+                method: 'PATCH',
+                url: '/apply',
+                body: data
+            }),
         }),
         getJob: builder.query({
             query: (data) => ({
                 url: '/jobs',
-            })
+            }),
+            providesTags: ["jobs"]
         }),
         getJobById: builder.query({
             query: (id) => ({
@@ -24,4 +33,4 @@ const jobApi = apiSlice.injectEndpoints({
 })
 
 
-export const { usePostJobMutation, useGetJobQuery, useGetJobByIdQuery } = jobApi
+export const { usePostJobMutation, useGetJobQuery, useGetJobByIdQuery, useApplyMutation } = jobApi
