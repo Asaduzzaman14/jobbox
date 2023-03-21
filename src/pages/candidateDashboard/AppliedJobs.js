@@ -2,18 +2,18 @@ import React from "react";
 import { useSelector } from "react-redux";
 import JobCard from "../../components/reusable/JobCard";
 import Loading from "../../components/reusable/Loading";
-import { useGetAppliedJobsQuery } from "../../features/job/jobApi";
+import { useGetApplyedJobsQuery } from "../../features/job/jobApi";
 
 const AppliedJobs = () => {
   const {
     user: { email },
   } = useSelector((state) => state.auth);
-  const { data, isLoading } = useGetAppliedJobsQuery(email);
+  const { data, isLoading } = useGetApplyedJobsQuery(email);
 
   if (isLoading) {
     return <Loading />;
   }
-
+  console.log(data, email);
   return (
     <div>
       <h1 className='text-xl py-5'>Applied jobs</h1>
