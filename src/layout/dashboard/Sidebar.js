@@ -4,12 +4,12 @@ import { FaChevronLeft } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 const Sidebar = () => {
-  const { user: { role } } = useSelector((state) => state.auth)
-  console.log(role);
+  const { user } = useSelector((state) => state.auth)
+  console.log(user, 'this is user role');
   const employerRoutes = [
     {
       name: "Add jobs",
-      path: "Add-jobs"
+      path: "add-job"
     }
   ]
   const candidateRoutes = [
@@ -30,20 +30,22 @@ const Sidebar = () => {
           </Link>
           <h1 className='text-xl'>Dashboard</h1>
         </div>
-        {role === 'employer' &&
-          employerRoutes?.map(({ name, path }) => {
-            <li>
-              <Link
-                className='hover:bg-primary hover:text-white bg-primary/10 transition-all w-full block py-2 px-3 rounded-full'
-                to={path}
-              >
-                {name}
-              </Link>
-            </li>
+        {user.role == 'employer' &&
+          employerRoutes.map(({ name, path }) => {
+            return (
+              <li key={name}>
+                <Link
+                  className='hover:bg-primary hover:text-white bg-primary/10 transition-all w-full block py-2 px-3 rounded-full'
+                  to={path}
+                >
+                  {name}
+                </Link>
+              </li>
+            )
           })
         }
 
-        {role == 'candidate' &&
+        {user.role == 'candidate' &&
           candidateRoutes?.map(({ name, path }) => {
             return (
               <li>

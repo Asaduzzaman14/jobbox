@@ -1,23 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { BsArrowRightShort, BsArrowReturnRight } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import meeting from "../assets/meeting.jpg";
-import { useApplyMutation, useGetJobByIdQuery, useQuestionsMutation } from "../features/job/jobApi";
+import { useApplyMutation, useGetJobByIdQuery, useQuestionsMutation, useReplyMutation } from "../features/job/jobApi";
 
 
 const JobDetails = () => {
   const { id } = useParams()
-  // console.log(id);
   const navigate = useNavigate()
+  const [reply, setReply] = useState('')
   const { user } = useSelector((state) => state.auth)
   const { handleSubmit, register, reset } = useForm();
-  const [sendQuestion] = useQuestionsMutation()
-
   const { data, isLoading, isError, isSuccess } = useGetJobByIdQuery(id)
+  console.log(user.role);
   const [apply] = useApplyMutation()
+  const [sendQuestion] = useQuestionsMutation()
+  const [sendReply] = useReplyMutation()
 
   console.log(data, 'job by id');
   const {
@@ -52,7 +53,7 @@ const JobDetails = () => {
 
     }
     console.log(data);
-    apply(data)
+    apply(data)   // apply using  useApplyMutation
 
   }
 
@@ -62,10 +63,19 @@ const JobDetails = () => {
       ...data,
       userId: user._id,
       jobId: _id,
+      email: user.email,
     });
     reset()
 
   }
+  const handelReply = (id) => {
+    const data = {
+      reply,
+      userId: id,
+    }
+    sendReply(data);  // send reply using useReplyMutation
+
+  };
 
   return (
     <div className='pt-14 grid grid-cols-12 gap-5'>
@@ -132,40 +142,52 @@ const JobDetails = () => {
                   <p className='text-lg font-medium'>{question}</p>
                   {reply?.map((item) => (
                     <p className='flex items-center gap-2 relative left-5'>
-                      <BsArrowReturnRight /> {item}
+                      <BsArrowReturnRight /> {item} ddas
                     </p>
                   ))}
 
-                  <div className='flex gap-3 my-5'>
-                    <input placeholder='Reply' type='text' className='w-full' />
-                    <button
-                      className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
-                      type='button'
-                    >
-                      <BsArrowRightShort size={30} />
-                    </button>
-                  </div>
+                  {user.role === 'employer' ?
+                    <div className='flex gap-3 my-5'>
+                      <input placeholder='Reply'
+                        type='text'
+                        className='w-full'
+                        onBlur={(e) => setReply(e.target.value)}
+                      />
+                      <button
+                        className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
+                        type='button'
+                        onClick={() => handelReply(id)}
+                      >
+                        <BsArrowRightShort size={30} />
+                      </button>
+                    </div>
+                    :
+                    ''
+                  }
                 </div>
               ))}
             </div>
 
-            <form onSubmit={handleSubmit(handelQuestion)}>
-              <div className='flex gap-3 my-5'>
-                <input
-                  placeholder='Ask a question...'
-                  type='text'
-                  className='w-full'
-                  required
-                  {...register('question')}
-                />
-                <button
-                  className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
-                  type='submit'
-                >
-                  <BsArrowRightShort size={30} />
-                </button>
-              </div>
-            </form>
+            {user.role === 'candidate' ?
+              <form onSubmit={handleSubmit(handelQuestion)}>
+                <div className='flex gap-3 my-5'>
+                  <input
+                    placeholder='Ask a question...'
+                    type='text'
+                    className='w-full'
+                    required
+                    {...register('question')}
+                  />
+                  <button
+                    className='shrink-0 h-14 w-14 bg-primary/10 border border-primary hover:bg-primary rounded-full transition-all  grid place-items-center text-primary hover:text-white'
+                    type='submit'
+                  >
+                    <BsArrowRightShort size={30} />
+                  </button>
+                </div>
+              </form>
+              : ''
+            }
           </div>
         </div>
       </div>
